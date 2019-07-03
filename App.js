@@ -26,13 +26,13 @@ export default class App extends React.Component {
         <View style={styles.card}>
           <TextInput
             style={styles.input}
-            placeholder={"new Trip"}
+            placeholder={"Add a new trip!"}
             value={newTrip}
             onChangeText={this._controlNewTrip}
             placeholderTextColor={"#999"}
             returnKeyType={"done"}
           />
-          <ScrollView>
+          <ScrollView contentContainerStyle={styles.trip}>
             <Trip />
           </ScrollView>
         </View>
@@ -66,6 +66,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontWeight: "300",
     fontSize: 25
+  },
+  trip: {
+    alignItems: "center"
   },
   card: {
     backgroundColor: "#ececec",
