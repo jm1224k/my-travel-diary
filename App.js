@@ -6,21 +6,44 @@ import {
   StatusBar,
   TextInput,
   Dimensions,
-  Platform
+  Platform,
+  ScrollView
 } from "react-native";
+import Trip from "./trip";
 
 const { height, width } = Dimensions.get("window");
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <Text style={styles.title}>여행 일지</Text>
-      <View style={styles.card}>
-        <TextInput style={styles.input}>여행 일정을 추가해 주세요</TextInput>
+export default class App extends React.Component {
+  state = {
+    newTrip: ""
+  };
+  render() {
+    const { newTrip } = this.state;
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <Text style={styles.title}>여행 일지</Text>
+        <View style={styles.card}>
+          <TextInput
+            style={styles.input}
+            placeholder={"new Trip"}
+            value={newTrip}
+            onChangeText={this._controlNewTrip}
+            placeholderTextColor={"#999"}
+            returnKeyType={"done"}
+          />
+          <ScrollView>
+            <Trip />
+          </ScrollView>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
+  _controlNewTrip = text => {
+    this.setState({
+      newTrip: text
+    });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -38,17 +61,18 @@ const styles = StyleSheet.create({
   input: {
     color: "#535353",
     alignContent: "center",
-    paddingTop: 80,
+    padding: 20,
+    borderBottomColor: "#bbb",
+    borderBottomWidth: 1,
     fontWeight: "300",
-    fontSize: 20
+    fontSize: 25
   },
   card: {
     backgroundColor: "#ececec",
-    alignItems: "center",
     fontSize: 20,
     width: width - 40,
-    height: 180,
     marginLeft: 20,
+    flex: 1,
     borderRadius: 5,
     ...Platform.select({
       ios: {
