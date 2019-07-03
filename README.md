@@ -1,1 +1,1 @@
-# todoapp-made-with-React-Native
+# my-travel-diary-made-with-react-native
