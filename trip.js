@@ -11,21 +11,55 @@ const { height, width } = Dimensions.get("window");
 export default class Trip extends Component {
   state = {
     isEditing: false,
-    isCompleted: false
+    isCompleted: false,
+    tripValue: false
   };
   render() {
-    const { isCompleted } = this.state;
+    const { isCompleted, isEditing } = this.state;
+    const { text } = this.props;
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this._toggleComplete}>
-          <View
+        <View style={styles.column}>
+          <TouchableOpacity onPress={this._toggleComplete}>
+            <View
+              style={[
+                styles.circle,
+                isCompleted ? styles.completedCircle : styles.uncompletedCircle
+              ]}
+            />
+          </TouchableOpacity>
+          <Text
             style={[
-              styles.circle,
-              isCompleted ? styles.completedCircle : styles.uncompletedCircle
+              styles.text,
+              isCompleted ? styles.completedText : styles.uncompletedText
             ]}
-          />
-        </TouchableOpacity>
-        <Text style={styles.text}>Ongoing trip</Text>
+          >
+            {text}
+          </Text>
+        </View>
+
+        {isEditing ? (
+          <View style={styles.actions}>
+            <TouchableOpacity onPressOut={this._finishEditing}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>✅</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.actions}>
+            <TouchableOpacity onPressOut={this._startEditing}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>🔍</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>❌</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }
@@ -37,6 +71,18 @@ export default class Trip extends Component {
       };
     });
   };
+  _startEditing = () => {
+    const { text } = this.props;
+    this.setState({
+      isEditing: true,
+      tripValue: text
+    });
+  };
+  _finishEditing = () => {
+    this.setState({
+      isEditing: false
+    });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -45,7 +91,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#bbb",
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   circle: {
     width: 35,
@@ -55,7 +102,7 @@ const styles = StyleSheet.create({
     marginRight: 30
   },
   completedCircle: {
-    borderColor: "red"
+    borderColor: "#bbb"
   },
   uncompletedCircle: {
     borderColor: "green"
@@ -64,5 +111,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     marginVertical: 20
+  },
+  completedText: {
+    color: "#bbb"
+  },
+  uncompletedText: {
+    color: "#353939"
+  },
+  column: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: width / 2,
+    justifyContent: "space-between"
+  },
+  actions: {
+    flexDirection: "row"
+  },
+  actionContainer: {
+    marginVertical: 10,
+    marginHorizontal: 10
   }
 });

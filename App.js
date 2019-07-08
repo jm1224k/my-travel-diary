@@ -33,7 +33,7 @@ export default class App extends React.Component {
             returnKeyType={"done"}
           />
           <ScrollView contentContainerStyle={styles.trip}>
-            <Trip />
+            <Trip text={"Ongoing trip"} />
           </ScrollView>
         </View>
       </View>
