@@ -4,19 +4,30 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  TextInput
 } from "react-native";
+import PropTypes from "prop-types";
 
 const { height, width } = Dimensions.get("window");
 export default class Trip extends Component {
-  state = {
-    isEditing: false,
-    isCompleted: false,
-    tripValue: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEditing: false,
+      tripValue: props.text
+    };
+  }
+  static PropTypes = {
+    text: PropTypes.string.isRequired,
+    isCompleted: PropTypes.bool.isRequired,
+    deleteTrip: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired
   };
+
   render() {
-    const { isCompleted, isEditing } = this.state;
-    const { text } = this.props;
+    const { isEditing, tripValue } = this.state;
+    const { text, id, deleteTrip, isCompleted } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.column}>
@@ -28,14 +39,29 @@ export default class Trip extends Component {
               ]}
             />
           </TouchableOpacity>
-          <Text
-            style={[
-              styles.text,
-              isCompleted ? styles.completedText : styles.uncompletedText
-            ]}
-          >
-            {text}
-          </Text>
+          {isEditing ? (
+            <TextInput
+              style={[
+                styles.text,
+                styles.input,
+                isCompleted ? styles.completedText : styles.uncompletedText
+              ]}
+              value={tripValue}
+              multiline={true}
+              onChangeText={this._controlInput}
+              returnKeyType={"done"}
+              onBlur={this._finishEditing}
+            />
+          ) : (
+            <Text
+              style={[
+                styles.text,
+                isCompleted ? styles.completedText : styles.uncompletedText
+              ]}
+            >
+              {text}
+            </Text>
+          )}
         </View>
 
         {isEditing ? (
@@ -53,7 +79,7 @@ export default class Trip extends Component {
                 <Text style={styles.actionText}>🔍</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPressOut={() => deleteTrip(id)}>
               <View style={styles.actionContainer}>
                 <Text style={styles.actionText}>❌</Text>
               </View>
@@ -72,15 +98,18 @@ export default class Trip extends Component {
     });
   };
   _startEditing = () => {
-    const { text } = this.props;
     this.setState({
-      isEditing: true,
-      tripValue: text
+      isEditing: true
     });
   };
   _finishEditing = () => {
     this.setState({
       isEditing: false
+    });
+  };
+  _controlInput = text => {
+    this.setState({
+      tripValue: text
     });
   };
 }
@@ -95,10 +124,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   circle: {
-    width: 35,
-    height: 35,
-    borderRadius: 100,
-    borderWidth: 5,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 3,
     marginRight: 30
   },
   completedCircle: {
@@ -121,8 +150,7 @@ const styles = StyleSheet.create({
   column: {
     flexDirection: "row",
     alignItems: "center",
-    width: width / 2,
-    justifyContent: "space-between"
+    width: width / 2
   },
   actions: {
     flexDirection: "row"
@@ -130,5 +158,10 @@ const styles = StyleSheet.create({
   actionContainer: {
     marginVertical: 10,
     marginHorizontal: 10
+  },
+  input: {
+    paddingBottom: 5,
+    marginVertical: 15,
+    width: width / 2
   }
 });
